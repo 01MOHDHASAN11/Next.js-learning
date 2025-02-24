@@ -1,8 +1,12 @@
 import { Button } from "@/components/ui/button"
 import { prisma } from "@/lib/prisma"
 import Link from "next/link"
-import { redirect } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
+// import Loading from "./loading"
 
+function snippetDelay(delay:number){
+  return new Promise((resolve)=>{setTimeout(resolve,delay)})
+}
 
 export default async function SnippetDetails({params}:{params:{id:string}}){
     const snippetUser = await prisma.snippet.findUnique({
@@ -10,8 +14,10 @@ export default async function SnippetDetails({params}:{params:{id:string}}){
     })
 
     if(!snippetUser){
-      return <h1>Snippet not found</h1>
+      notFound()
     }
+
+    await snippetDelay(3000)
     
     async function deleteSnippet(){
       "use server"
